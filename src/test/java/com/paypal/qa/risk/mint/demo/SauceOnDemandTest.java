@@ -10,8 +10,8 @@ import com.paypal.qa.risk.mint.util.SauceTest;
 public class SauceOnDemandTest extends SauceTest {
 
 	@Test
-	public void validateTitle() {
-		Helper.driver().get("https://www.stage2p2516.qa.paypal.com/us/cgi-bin/webscr?cmd=_login-run");
-		assertEquals("Login United States - PayPal", Helper.driver().getTitle());
+	public void validateJenkinsSitePageTitle() {
+		Helper.driver().get("http://jenkins-ci.org/");
+		assertEquals("Welcome to Jenkins CI! | Jenkins CI", Helper.driver().getTitle());
 	}
 }
