@@ -1,7 +1,9 @@
 package com.paypal.qa.risk.mint.util;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +13,11 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -21,7 +27,7 @@ import com.saucelabs.junit.SauceOnDemandTestWatcher;
 
 public class SauceTest implements SauceOnDemandSessionIdProvider{
 
-	private WebDriver driver;
+	private WebDriver driver = null;
     private boolean runOnSauce = System.getProperty("sauce") != null;
     private String sessionId;
     private static Date date = new Date();
@@ -77,10 +83,29 @@ public class SauceTest implements SauceOnDemandSessionIdProvider{
         	URL serverAddress = new URL("http://" + username + ":" + accessKey + "@ondemand.saucelabs.com:80/wd/hub");
         	this.driver = new RemoteWebDriver(serverAddress, capabilities);
         	this.sessionId = ((RemoteWebDriver)driver).getSessionId().toString();
+        	Helper.init(driver);
         } else {
-        	// TODO: local driver
-        	this.driver = new FirefoxDriver();
+			// Set default driver to FireFox browser with no profile
+        	String browser = Helper.readPropertyOrEnv("SELENIUM_BROWSER", "firefox");
+        	String firefoxProfileFile = Helper.readPropertyOrEnv("FF_PROFILE_FILE","");
+			if (browser.toLowerCase().equals("firefox")) {
+				if (firefoxProfileFile.isEmpty()) {
+					this.driver = new FirefoxDriver();
+				} else {
+					FirefoxProfile firefoxProfile = new FirefoxProfile(new File(firefoxProfileFile));
+					this.driver = new FirefoxDriver(firefoxProfile);
+				}
+			} else if (browser.toLowerCase().equals("chrome")) {
+				// TODO: Mac OS?
+//				ChromeOptions options = new ChromeOptions();
+//				options.addExtensions(new File("/path/to/extension.crx"));
+//				options.setBinary(new File("/path/to/chrome"));
+//				this.driver = new ChromeDriver(options);
+			} else {
+				this.driver = new InternetExplorerDriver();
+			}
         }
+        this.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         Helper.init(driver);
     }
 
