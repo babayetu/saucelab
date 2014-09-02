@@ -28,7 +28,7 @@ import com.saucelabs.junit.SauceOnDemandTestWatcher;
 public class SauceTest implements SauceOnDemandSessionIdProvider{
 
 	private WebDriver driver = null;
-    private boolean runOnSauce = System.getProperty("sauce") != null;
+    private boolean runOnSauce = System.getProperty("SAUCE") != null;
     private String sessionId;
     private static Date date = new Date();
     
