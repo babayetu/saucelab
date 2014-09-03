@@ -14,4 +14,10 @@ public class SauceOnDemandTest extends SauceTest {
 		Helper.driver().get("http://jenkins-ci.org/");
 		assertEquals("Welcome to Jenkins CI! | Jenkins CI", Helper.driver().getTitle());
 	}
+	
+	@Test
+	public void validateAdminPageTitle() {
+		Helper.driver().get("https://admin.stage2p2516.qa.paypal.com/cgi-bin/admin");
+		assertEquals("Login - PayPal Administrative Tools", Helper.driver().getTitle());
+	}
 }
